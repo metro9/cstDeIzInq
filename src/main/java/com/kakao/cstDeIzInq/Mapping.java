@@ -1,5 +1,7 @@
 package com.kakao.cstDeIzInq;
 
+import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -11,7 +13,8 @@ import javax.persistence.Query;
 import org.qlrm.mapper.JpaResultMapper;
 
 import com.kakao.cstDeIzInq.domain.ManSumAmDTO;
-import com.kakao.cstDeIzInq.domain.YearManSumAmDTO;
+import com.kakao.cstDeIzInq.domain.YearManSumAm1DTO;
+import com.kakao.cstDeIzInq.domain.YearManSumAm2DTO;
 import com.kakao.cstDeIzInq.domain.YearNoDeDTO;
 import com.kakao.cstDeIzInq.domain.YearSumAmDTO;
 
@@ -61,26 +64,53 @@ public class Mapping {
 	 		return resultList;
 	    }
 	    
-	    public static List<YearManSumAmDTO> yearManSumAm() {
+	    public static List<YearManSumAm2DTO> yearManSumAm() {
 	 	    
-	 	    String sql = "SELECT SUBSTR(DE_DT, 0, 4) YEAR, MAN_NM, B.MAN_CD, SUM(AM-FE) SUM_AM FROM DE_IZ A, ACCT_INF B, MAN_INF C " + 
+	 	    String sql = "SELECT MAN_NM, B.MAN_CD, SUM(AM-FE) SUM_AM FROM DE_IZ A, ACCT_INF B, MAN_INF C " + 
 	 	    		"WHERE CAN_YN = 'N' " + 
 	 	    		"AND A.ACCT_NO = B.ACCT_NO " + 
 	 	    		"AND B.MAN_CD = C.MAN_CD " + 
-	 	    		"GROUP BY YEAR, MAN_NM, B.MAN_CD " + 
-	 	    		"ORDER BY YEAR, SUM_AM DESC ";
+	 	    		"AND SUBSTR(DE_DT, 0, 4) = '2018' " +
+	 	    		"GROUP BY MAN_NM, B.MAN_CD " + 
+	 	    		"ORDER BY SUM_AM DESC ";
 	 	    		
 	 	    System.out.println(sql);
 			Query query = em.createNativeQuery(sql);
 	 	
 	 	    JpaResultMapper jpaResultMapper = new JpaResultMapper();
-	 	    List<YearManSumAmDTO> resultList = jpaResultMapper.list(query, YearManSumAmDTO.class);
-	 		System.out.println(resultList);
+	 	    List<YearManSumAm1DTO> resultList = jpaResultMapper.list(query, YearManSumAm1DTO.class);
+	 	    List<YearManSumAm2DTO> result2List = new ArrayList<YearManSumAm2DTO>();
+ 			YearManSumAm2DTO yearManSumAm2DTO = new YearManSumAm2DTO(null, null);
+ 			
+ 			yearManSumAm2DTO.setYear("2018");
+ 			
+	 		yearManSumAm2DTO.setYearManSumAm1DTO(resultList);
 	 		
-	 		return resultList;
+	 		result2List.add(yearManSumAm2DTO);
+	 		System.out.println(result2List.get(0).getYear());
+	 	    sql = "SELECT MAN_NM, B.MAN_CD, SUM(AM-FE) SUM_AM FROM DE_IZ A, ACCT_INF B, MAN_INF C " + 
+	 	    		"WHERE CAN_YN = 'N' " + 
+	 	    		"AND A.ACCT_NO = B.ACCT_NO " + 
+	 	    		"AND B.MAN_CD = C.MAN_CD " + 
+	 	    		"AND SUBSTR(DE_DT, 0, 4) = '2019' " +
+	 	    		"GROUP BY MAN_NM, B.MAN_CD " + 
+	 	    		"ORDER BY SUM_AM DESC ";
+	 	    		
+	 	    System.out.println(sql);
+			em.createNativeQuery(sql);
+	 	
+	 	    //resultList = jpaResultMapper.list(query, YearManSumAm1DTO.class);
+	 	   
+ 			//yearManSumAm2DTO.setYear("2019");
+	 		
+	 		//yearManSumAm2DTO.setYearManSumAm1DTO(resultList);	 			
+	 			
+	 		//result2List.add(yearManSumAm2DTO);
+	 		System.out.println(result2List.get(0).getYear());
+	 		return result2List;
 	    }
 	    
-	    public static List<ManSumAmDTO> manSumAm(String brNm) {
+		public static List<ManSumAmDTO> manSumAm(String brNm) {
 	 	    
 	 	    String sql = "SELECT MAN_NM, B.MAN_CD, SUM(AM-FE) SUM_AM FROM DE_IZ A, ACCT_INF B, MAN_INF C " + 
 		 	    		"WHERE CAN_YN = 'N' " + 
@@ -95,7 +125,7 @@ public class Mapping {
 	 	    JpaResultMapper jpaResultMapper = new JpaResultMapper();
 	 	    List<ManSumAmDTO> resultList = jpaResultMapper.list(query, ManSumAmDTO.class);
 	 		System.out.println(resultList);
-	 		
+
 	 		return resultList;
 	    }
 	}

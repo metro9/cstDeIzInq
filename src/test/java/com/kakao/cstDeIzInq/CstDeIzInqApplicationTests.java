@@ -33,8 +33,6 @@ public class CstDeIzInqApplicationTests {
 		Mapping.manSumAm(brNm);
 
         //then
-		assertThat();
-
 
     }
 
