@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import com.kakao.cstDeIzInq.Mapping;
+import com.kakao.cstDeIzInq.domain.ApiResponseMessage;
 import com.google.gson.Gson; 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
@@ -26,7 +27,6 @@ public class CstDeIzInqController {
 			select = element.getAsJsonObject().get("select").getAsString();
 			brNm = element.getAsJsonObject().get("brNm").getAsString();
 		} catch (Exception e) {
-			e.printStackTrace();
 		}
 		Gson gson = new Gson();
 		String json = null;
@@ -40,13 +40,18 @@ public class CstDeIzInqController {
 		json = gson.toJson(Mapping.yearManSumAm());
 		}
 		else if("4".equals(select)) {
-		json = gson.toJson(Mapping.manSumAm(brNm));
+			if ("분당점".equals(brNm) ) {
+				ApiResponseMessage apiResponseMessage = new ApiResponseMessage(null, null, null); 
+				apiResponseMessage.setHttpstatus("404");
+				apiResponseMessage.setCode("404");
+				apiResponseMessage.set메세지("br code not found error");
+				json = gson.toJson(apiResponseMessage);
+			}
+			else {
+				json = gson.toJson(Mapping.manSumAm(brNm));
+			};
 		}
 		return json;
 	}
-
-
+	
 }
-
-
-

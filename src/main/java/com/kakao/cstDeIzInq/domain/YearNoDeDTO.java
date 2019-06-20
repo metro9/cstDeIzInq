@@ -1,5 +1,12 @@
 package com.kakao.cstDeIzInq.domain;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
+@Setter
+@Getter
+@ToString
 public class YearNoDeDTO {
     private String year;
     private String name;

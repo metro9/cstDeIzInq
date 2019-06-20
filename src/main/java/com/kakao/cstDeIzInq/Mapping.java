@@ -1,6 +1,5 @@
 package com.kakao.cstDeIzInq;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,7 +16,6 @@ import com.kakao.cstDeIzInq.domain.YearManSumAm1DTO;
 import com.kakao.cstDeIzInq.domain.YearManSumAm2DTO;
 import com.kakao.cstDeIzInq.domain.YearNoDeDTO;
 import com.kakao.cstDeIzInq.domain.YearSumAmDTO;
-
 
 public class Mapping {
 		@PersistenceContext
@@ -46,7 +44,7 @@ public class Mapping {
 	    
 	    public static List<YearNoDeDTO> yearNoDe() {
 	 	    
-	 	    String sql = "SELECT A.YEAR, A.ACCT_NO, A.ACCT_NM  FROM " + 
+	 	    String sql = "SELECT A.YEAR, A.ACCT_NM , A.ACCT_NO FROM " + 
 		 	    		"(SELECT * FROM ACCT_INF, " + 
 		 	    		"(SELECT DISTINCT SUBSTR(DE_DT, 0, 4) YEAR FROM DE_IZ ) ) A LEFT OUTER JOIN DE_IZ B " + 
 		 	    		"ON A.YEAR = SUBSTR(B.DE_DT, 0, 4)  " + 
@@ -76,18 +74,14 @@ public class Mapping {
 	 	    		
 	 	    System.out.println(sql);
 			Query query = em.createNativeQuery(sql);
-	 	
-	 	    JpaResultMapper jpaResultMapper = new JpaResultMapper();
+			JpaResultMapper jpaResultMapper = new JpaResultMapper();
 	 	    List<YearManSumAm1DTO> resultList = jpaResultMapper.list(query, YearManSumAm1DTO.class);
-	 	    List<YearManSumAm2DTO> result2List = new ArrayList<YearManSumAm2DTO>();
+	 	    List<YearManSumAm2DTO> result2List = new ArrayList<>();
  			YearManSumAm2DTO yearManSumAm2DTO = new YearManSumAm2DTO(null, null);
- 			
- 			yearManSumAm2DTO.setYear("2018");
- 			
-	 		yearManSumAm2DTO.setYearManSumAm1DTO(resultList);
+  			yearManSumAm2DTO.setYear("2018");
+  			yearManSumAm2DTO.setYearManSumAm1DTO(resultList);
+  			result2List.add(yearManSumAm2DTO);
 	 		
-	 		result2List.add(yearManSumAm2DTO);
-	 		System.out.println(result2List.get(0).getYear());
 	 	    sql = "SELECT MAN_NM, B.MAN_CD, SUM(AM-FE) SUM_AM FROM DE_IZ A, ACCT_INF B, MAN_INF C " + 
 	 	    		"WHERE CAN_YN = 'N' " + 
 	 	    		"AND A.ACCT_NO = B.ACCT_NO " + 
@@ -97,16 +91,12 @@ public class Mapping {
 	 	    		"ORDER BY SUM_AM DESC ";
 	 	    		
 	 	    System.out.println(sql);
-			em.createNativeQuery(sql);
-	 	
-	 	    //resultList = jpaResultMapper.list(query, YearManSumAm1DTO.class);
-	 	   
- 			//yearManSumAm2DTO.setYear("2019");
-	 		
-	 		//yearManSumAm2DTO.setYearManSumAm1DTO(resultList);	 			
-	 			
-	 		//result2List.add(yearManSumAm2DTO);
-	 		System.out.println(result2List.get(0).getYear());
+	 	    query = em.createNativeQuery(sql);
+	 	    resultList = jpaResultMapper.list(query, YearManSumAm1DTO.class);
+	 	    yearManSumAm2DTO = new YearManSumAm2DTO(null, null);
+ 			yearManSumAm2DTO.setYear("2019");
+	 		yearManSumAm2DTO.setYearManSumAm1DTO(resultList);	 		
+	 		result2List.add(yearManSumAm2DTO);
 	 		return result2List;
 	    }
 	    

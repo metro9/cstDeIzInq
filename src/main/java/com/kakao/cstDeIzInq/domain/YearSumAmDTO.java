@@ -2,6 +2,13 @@ package com.kakao.cstDeIzInq.domain;
 
 import java.math.BigInteger;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
+@Setter
+@Getter
+@ToString
 public class YearSumAmDTO {
     private String year;
     private String acctNo;
